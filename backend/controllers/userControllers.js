@@ -3,6 +3,8 @@ const User = require('../db/userModel');
 const zod = require('zod');
 const jwt = require('jsonwebtoken');
 
+const JWT_SECRET = process.env.JWT_SECRET;
+
 // Input validation with zod
 const usernameSchema = zod.string();
 const emailSchema = zod.string().email();
@@ -35,8 +37,11 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
     });
 
+    const token = await jwt.sign({ username }, JWT_SECRET);
+
     return res.status(201).json({
         message: 'User created successfully!!',
+        token,
     });
 });
 
