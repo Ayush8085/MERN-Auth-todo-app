@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../db/userModel');
 const zod = require('zod');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -9,6 +10,11 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const usernameSchema = zod.string();
 const emailSchema = zod.string().email();
 const passwordSchema = zod.string().min(6);
+
+// ----------------- GENERATE JWT TOKEN ----------------
+function generateToken(id) {
+    return jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
+}
 
 // ----------------- REGISTER USER ----------------
 const registerUser = asyncHandler(async (req, res) => {
@@ -31,13 +37,13 @@ const registerUser = asyncHandler(async (req, res) => {
         });
     }
 
-    await User.create({
+    const user = await User.create({
         username,
         email,
         password,
     });
 
-    const token = await jwt.sign({ username }, JWT_SECRET);
+    const token = generateToken(user._id);
 
     return res.status(201).json({
         message: 'User created successfully!!',
@@ -45,6 +51,43 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 });
 
+// ----------------- LOGIN USER ----------------
+const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    if (
+        passwordSchema.safeParse(password).success === false ||
+        emailSchema.safeParse(email).success === false) {
+        return res.status(404).json({
+            message: 'Invalid inputs!!'
+        });
+    }
+
+    const userExists = await User.findOne({ email });
+
+    if (!userExists) {
+        return res.status(404).json({
+            message: 'User does not exists, please register!!',
+        });
+    }
+
+    const validPassword = await bcrypt.compare(password, userExists.password);
+    if (!validPassword) {
+        return res.status(404).json({
+            message: 'Invalid password!!',
+        });
+    }
+
+    const token = generateToken(userExists._id);
+
+    return res.status(200).json({
+        message: 'Logged in successfully!!',
+        token,
+    });
+});
+
+
 module.exports = {
     registerUser,
+    loginUser,
 };
