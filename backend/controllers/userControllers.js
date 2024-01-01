@@ -86,8 +86,13 @@ const loginUser = asyncHandler(async (req, res) => {
     });
 });
 
+// ----------------- HOME PAGE ----------------
+const home = asyncHandler(async (req, res) => {
+    return res.send("<h1>Home page</h1>");
+});
 
 module.exports = {
     registerUser,
     loginUser,
+    home,
 };
