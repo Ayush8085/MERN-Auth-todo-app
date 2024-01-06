@@ -5,9 +5,18 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const userMiddleware = async (req, res, next) => {
     const jwt_string = req.headers['authorization'];
-    const token = jwt_string.split(' ')[1].trim();
+    console.log('TOKEN: ', jwt_string);
+    const token = jwt_string.split(' ')[1];
 
-    const verified =  jwt.verify(token, JWT_SECRET);
+    if (!token === null) {
+        console.log("Token missing");
+        return res.status(404).json({
+            message: 'Authorization token missing',
+        })
+    }
+
+
+    const verified = jwt.verify(token, JWT_SECRET);
     if (verified) {
         req.user = await User.findById(verified.id);
         return next();

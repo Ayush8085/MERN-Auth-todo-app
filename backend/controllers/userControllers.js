@@ -12,8 +12,8 @@ const emailSchema = zod.string().email();
 const passwordSchema = zod.string().min(6);
 
 // ----------------- GENERATE JWT TOKEN ----------------
-function generateToken(id) {
-    return jwt.sign({ id }, JWT_SECRET, { expiresIn: '1d' });
+function generateToken(id, username, email) {
+    return jwt.sign({ id, username, email }, JWT_SECRET, { expiresIn: '1d' });
 }
 
 // ----------------- REGISTER USER ----------------
@@ -43,7 +43,10 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
     });
 
-    const token = generateToken(user._id);
+    console.log("USER: ", user);
+
+
+    const token = generateToken(user._id, user.username, user.email);
 
     return res.status(201).json({
         message: 'User created successfully!!',
@@ -78,7 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
         });
     }
 
-    const token = generateToken(userExists._id);
+    const token = generateToken(userExists._id, userExists.username, userExists.email);
 
     return res.status(200).json({
         message: 'Logged in successfully!!',
@@ -88,7 +91,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // ----------------- HOME PAGE ----------------
 const home = asyncHandler(async (req, res) => {
-    return res.send("<h1>Home page</h1>");
+    return res.status(200).json({
+        message: 'This line can be seen because you have a valid token'
+    })
 });
 
 module.exports = {

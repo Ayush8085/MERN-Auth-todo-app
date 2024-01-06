@@ -17,7 +17,9 @@ html {
     font-weight: 400;
 }
 
-
+.wrapper {
+    padding: 2rem;
+}
 
 .card {
     max-width: 500px;
