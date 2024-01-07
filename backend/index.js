@@ -4,6 +4,8 @@ const userRoutes = require('./routes/userRoutes');
 const todoRoutes = require('./routes/todoRoutes');
 const { default: mongoose } = require("mongoose");
 const errorHandler = require('./middlewares/errorMiddleware');
+const protect = require('./middlewares/userMiddleware');
+
 const cors = require('cors');
 
 const PORT = process.env.PORT || 5000;
@@ -19,9 +21,9 @@ app.use(cors({
 
 // -------------- Routes Middlewares --------------
 app.use('/api/users', userRoutes);
-app.use('/api/todos', todoRoutes);
+app.use('/api/todos', protect, todoRoutes);
 
-// -------------- Error Handler Middlewares --------------
+// -------------- Error Handler Middleware --------------
 app.use(errorHandler);
 
 // -------------- CONNECT DB AND RUN SERVER --------------
