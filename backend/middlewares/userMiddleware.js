@@ -9,21 +9,22 @@ const userMiddleware = async (req, res, next) => {
 
     if (!token === null) {
         console.log("Token missing");
-        return res.status(404).json({
-            message: 'Authorization token missing',
-        })
+        res.status(401);
+        throw new Error('Authorization token missing');
     }
 
 
     const verified = jwt.verify(token, JWT_SECRET);
-    if (verified) {
-        req.user = await User.findById(verified.id);
-        return next();
+
+    const user = await User.findById(verified.id).select('-password');
+
+    if (!user) {
+        res.status(401);
+        throw new Error("User not found!!");
     }
 
-    return res.status(404).json({
-        message: "Invalid token!!",
-    })
+    req.user = user;
+    next();
 }
 
 module.exports = userMiddleware;

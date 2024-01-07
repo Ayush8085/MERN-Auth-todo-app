@@ -24,17 +24,15 @@ const registerUser = asyncHandler(async (req, res) => {
         usernameSchema.safeParse(username).success === false ||
         passwordSchema.safeParse(password).success === false ||
         emailSchema.safeParse(email).success === false) {
-        return res.status(404).json({
-            message: 'Invalid inputs!!'
-        });
+        res.status(404);
+        throw new Error('Invalid inputs!!');
     }
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-        return res.status(404).json({
-            message: 'User already exists!!',
-        });
+        res.status(404);
+        throw new Error('User already exists!!');
     }
 
     const user = await User.create({
@@ -42,9 +40,6 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         password,
     });
-
-    console.log("USER: ", user);
-
 
     const token = generateToken(user._id, user.username, user.email);
 
@@ -61,24 +56,22 @@ const loginUser = asyncHandler(async (req, res) => {
     if (
         passwordSchema.safeParse(password).success === false ||
         emailSchema.safeParse(email).success === false) {
-        return res.status(404).json({
-            message: 'Invalid inputs!!'
-        });
+        res.status(404);
+        throw new Error('Invalid inputs!!');
+
     }
 
     const userExists = await User.findOne({ email });
 
     if (!userExists) {
-        return res.status(404).json({
-            message: 'User does not exists, please register!!',
-        });
+        res.status(404);
+        throw new Error('User does not exists, please register!!');
     }
 
     const validPassword = await bcrypt.compare(password, userExists.password);
     if (!validPassword) {
-        return res.status(404).json({
-            message: 'Invalid password!!',
-        });
+        res.status(404);
+        throw new Error('Invalid password!!');
     }
 
     const token = generateToken(userExists._id, userExists.username, userExists.email);
