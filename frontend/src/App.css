@@ -71,3 +71,40 @@ form>p {
     color: #000;
     text-decoration: underline;
 }
+
+.todoForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #efefef;
+    border-radius: 1rem;
+}
+
+.todoForm>input {
+    width: 100%;
+    margin-top: 0;
+    background-color: #efefef;
+    border: none;
+    outline: none;
+}
+
+.add-todo-btn {
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    border: none;
+    width: 20%;
+    background-color: yellowgreen;
+    cursor: pointer;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.todo-left,
+.todo-right {
+    display: flex;
+    gap: 1rem;
+} 

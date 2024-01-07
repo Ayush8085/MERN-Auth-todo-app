@@ -18,7 +18,7 @@ const Register = () => {
         try {
             const token = localStorage.getItem('token');
             if (token) {
-                navigate('/home');
+                navigate('/todos');
             }
         } catch (error) {
 
@@ -34,15 +34,15 @@ const Register = () => {
         e.preventDefault();
 
         if (!username || !email || !password) {
-            console.log(); ("All fields are required!!");
+            return toast.error("All fields are required!!");
         }
 
         if (password.length < 6) {
-            console.log("Invalid password!!");
+             return toast.error("Invalid password!!");
         }
 
         if (!validateEmail(email)) {
-            console.log("Invalid email");
+             return toast.error("Invalid email");
         }
 
         const userData = {
@@ -54,9 +54,9 @@ const Register = () => {
         try {
             const data = await registerUser(userData);
             localStorage.setItem('token', data.token);
-            navigate('/home');
+            navigate('/todos');
         } catch (error) {
-            console.log(error.message);
+             return toast.error(error.message);
         }
 
     }

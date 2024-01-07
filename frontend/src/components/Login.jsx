@@ -16,7 +16,7 @@ const Login = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            navigate('/home');
+            navigate('/todos');
         }
     }, [])
 
@@ -33,11 +33,11 @@ const Login = () => {
         }
 
         if (password.length < 6) {
-            console.log("Invalid password!!");
+            return toast.error("Invalid password!!");
         }
 
         if (!validateEmail(email)) {
-            console.log("Invalid email");
+            return toast.error("Invalid email");
         }
 
         const userData = {
@@ -47,11 +47,10 @@ const Login = () => {
 
         try {
             const data = await loginUser(userData);
-            console.log('CALL 1');
             localStorage.setItem('token', data.token);
-            navigate('/home');
+            navigate('/todos');
         } catch (error) {
-            console.log(error.message);
+            return toast.error(error.message);
         }
 
     }

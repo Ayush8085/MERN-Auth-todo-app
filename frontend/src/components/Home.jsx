@@ -10,7 +10,6 @@ const Home = () => {
   const handleHome = async () => {
     try {
       const data = await home();
-      console.log('DATA: ', data);
       setMsg(data.message);
     } catch (error) {
       console.log(error.message);
@@ -18,9 +17,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    console.log('CALL 2');
     const token = localStorage.getItem('token');
-    console.log("JSON TOKEN: ", token);
     if (!token) {
       navigate('/');
     }

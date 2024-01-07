@@ -1,9 +1,10 @@
+const asyncHandler = require('express-async-handler');
 const jwt = require("jsonwebtoken");
 const User = require("../db/userModel");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const userMiddleware = async (req, res, next) => {
+const userMiddleware = asyncHandler(async (req, res, next) => {
     const jwt_string = req.headers['authorization'];
     const token = jwt_string.split(' ')[1];
 
@@ -25,6 +26,6 @@ const userMiddleware = async (req, res, next) => {
 
     req.user = user;
     next();
-}
+})
 
 module.exports = userMiddleware;
