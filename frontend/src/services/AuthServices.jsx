@@ -1,17 +1,7 @@
 import axios from "axios";
-import { authAxios } from "../config";
 
 export const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
-// const token = localStorage.getItem('token');
-// console.log("SERVICES: ", token);
-
-// const authAxios = axios.create({
-//     baseURL: BACKEND_URL,
-//     headers: {
-//         Authorization: `Bearer ${token}`
-//     }
-// })
 
 // ----------------- VALIDATE EMAIL -----------------
 export const validateEmail = (email) => {
@@ -50,8 +40,8 @@ export const loginUser = async (userData) => {
 // ----------------- HOME -----------------
 export const home = async () => {
     try {
-        const response = await authAxios.get(`/api/users/home`);
-        // const response = await axios.get(`${BACKEND_URL}/api/users/home`, { headers });
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${BACKEND_URL}/api/users/home`, { headers: { Authorization: `Bearer ${token}` } });
         if (response.status === 200) {
             return response.data;
         }
