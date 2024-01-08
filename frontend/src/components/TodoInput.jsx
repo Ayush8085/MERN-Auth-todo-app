@@ -43,6 +43,8 @@ const TodoInput = () => {
         }
         try {
             await updateTodo({ id: todoId, text, completed: false });
+            toast.success("Todo updated successfully!!")
+            setIsEditing(false);
             setText('');
             handleGetTodos();
         } catch (error) {

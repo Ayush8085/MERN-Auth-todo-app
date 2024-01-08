@@ -36,20 +36,6 @@ export const loginUser = async (userData) => {
     }
 }
 
-// ----------------- HOME -----------------
-export const home = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${BACKEND_URL}/api/users/home`, { headers: { Authorization: `Bearer ${token}` } });
-        if (response.status === 200) {
-            return response.data;
-        }
-    } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        toast.error(message);
-    }
-}
-
 // ----------------- GET ALL TODOS -----------------
 export const getTodos = async () => {
     try {
@@ -115,7 +101,6 @@ export const updateTodo = async (todoData) => {
         const { id, ...tempData } = todoData;
         const response = await axios.put(`${BACKEND_URL}/api/todos/${todoData.id}`, tempData, { headers: { Authorization: `Bearer ${token}` } });
         if (response.status === 200) {
-            toast.success("Todo updated successfully!!")
             return response.data;
         }
     } catch (error) {
