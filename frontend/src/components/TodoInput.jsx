@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { addTodo, getTodos } from '../services/AuthServices';
+import { addTodo, getTodos, updateTodo } from '../services/AuthServices';
 import TodoList from './TodoList';
 import { toast } from 'react-toastify';
 import { GiDiamonds } from 'react-icons/gi';
@@ -8,13 +8,10 @@ import { GiDiamonds } from 'react-icons/gi';
 const TodoInput = () => {
     const [text, setText] = useState('');
     const [todos, setTodos] = useState([]);
+    const [todoId, setTodoId] = useState();
+    const [isEditing, setIsEditing] = useState(false);
 
     const navigate = useNavigate();
-
-    const handleGetTodos = async () => {
-        const response = await getTodos();
-        setTodos(response.todos);
-    }
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -25,6 +22,34 @@ const TodoInput = () => {
             handleGetTodos();
         }
     }, [todos, text])
+
+
+    const handleGetTodos = async () => {
+        const response = await getTodos();
+        setTodos(response.todos);
+    }
+
+    const getSingleTask = (id, todoText) => {
+        setIsEditing(true);
+        setText(todoText);
+        setTodoId(id);
+    }
+
+    const updateTask = async (e) => {
+        e.preventDefault();
+
+        if (text === '') {
+            return toast.error('Cannot add empty to list!!');
+        }
+        try {
+            await updateTodo({ id: todoId, text, completed: false });
+            setText('');
+            handleGetTodos();
+        } catch (error) {
+            return toast.error(error.message);
+        }
+    }
+
 
     const addtodo = async (e) => {
         e.preventDefault();
@@ -47,12 +72,14 @@ const TodoInput = () => {
             <div className="card">
                 <GiDiamonds size={50} />
                 <h1>My Todo</h1>
-                <form onSubmit={addtodo} className='todoForm'>
+                <form onSubmit={isEditing ? updateTask : addtodo} className='todoForm'>
                     <input type="text" name="todoInput" value={text} placeholder='Add todo' onChange={(e) => setText(e.target.value)} />
 
-                    <button type="submit" className='add-todo-btn'>Add</button>
+                    <button type="submit" className='add-todo-btn'>
+                        {isEditing ? ("Edit") : ('Add')}
+                    </button>
                 </form>
-                <TodoList todos={todos} text={text} setText={setText} />
+                <TodoList todos={todos} text={text} getSingleTask={getSingleTask} />
             </div>
         </div>
     )

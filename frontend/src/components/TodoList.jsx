@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FaCheckDouble, FaEdit, FaTrash } from "react-icons/fa";
-import { deleteTodo, getTodo, updateTodo } from '../services/AuthServices';
+import { deleteTodo, updateTodo } from '../services/AuthServices';
 
 
-const TodoList = ({ todos, text }) => {
+const TodoList = ({ todos, getSingleTask }) => {
 
     const handleDelete = async (id) => {
         await deleteTodo(id);
@@ -29,7 +29,7 @@ const TodoList = ({ todos, text }) => {
                             </div>
                             <div className="todo-right">
                                 <FaCheckDouble color='green' onClick={() => handleComplete(todo._id, todo.text, !todo.completed)} />
-                                <FaEdit color='purple' />
+                                <FaEdit color='purple' onClick={() => getSingleTask(todo._id, todo.text)} />
                                 <FaTrash color='red' onClick={() => handleDelete(todo._id)} />
                             </div>
                         </div>
